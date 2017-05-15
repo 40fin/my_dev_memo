@@ -217,9 +217,16 @@ cd /opt/kafka/bin
 # start a console producer in another Shell
 ./kafka-console-producer.sh --broker-list localhost:9092 --topic test
 ```
+##### 2.9, 其他操作系统参考
+- [Linux下安装Kafka和PHP的相关扩展](https://blog.skyx.in/archives/282/)
+- [Install and Configure Apache Kafka on Ubuntu 16.04](https://devops.profitbricks.com/tutorials/install-and-configure-apache-kafka-on-ubuntu-1604-1/)
+- [Rdkafka Installation](https://arnaud-lb.github.io/php-rdkafka/phpdoc/rdkafka.installation.html)
+- [Manually Installing Rdkafka](https://arnaud-lb.github.io/php-rdkafka/phpdoc/rdkafka.installation.manual.html)
+- [HOW TO INSTALL A PHP PECL EXTENSION/MODULE ON UBUNTU](http://www.mkfoster.com/2009/01/04/how-to-install-a-php-pecl-extensionmodule-on-ubuntu/)
 
 #### 3，参考资料
 
 - [How to Install Apache Kafka on CentOS 7](https://www.vultr.com/docs/how-to-install-apache-kafka-on-centos-7)
 - [Installing Apache Kafka and Zookeeper CentOS 7.2](http://davidssysadminnotes.blogspot.com/2016/01/installing-apache-kafka-and-zookeeper.html)
 - [Installing the extension with PECL](https://arnaud-lb.github.io/php-rdkafka/phpdoc/rdkafka.installation.pecl.html)
+- [在CentOS 7上安装Kafka](https://www.mtyun.com/library/32/how-to-install-kafka-on-centos7/)
