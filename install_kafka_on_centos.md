@@ -217,7 +217,79 @@ cd /opt/kafka/bin
 # start a console producer in another Shell
 ./kafka-console-producer.sh --broker-list localhost:9092 --topic test
 ```
-##### 2.9, 其他操作系统参考
+
+##### 2.9, 安装yahoo kafka-manager
+
+首先参考[官网](https://github.com/yahoo/kafka-manager)，下载编译及生成相应的zip文件。
+```bash
+# download source code
+git clone https://github.com/yahoo/kafka-manager
+
+# compile
+cd kafka-manager
+./sbt clean dist
+
+# upload the zip file
+scp -P port_number target/universal/kafka-manager-1.3.0.8.zip user_name@host_name:/server_path/
+```
+
+然后登录相应的服务器，
+```bash
+tar xzvf kafka-manager-1.3.0.8.zip
+mv kafka-manager-1.3.0.8 /home/wwwroot/kafka-manager
+
+cd /home/wwwroot/kafka-manager
+sudo chown -R kafka. .
+```
+再然后参考官网修改`kafka-manager.zkhosts`文件中的内容
+```bash
+kafka-manager.zkhosts="kafka-manager-zookeeper:2181"
+kafka-manager.zkhosts=${?ZK_HOSTS}
+```
+为
+```bash
+# kafka-manager.zkhosts="kafka-manager-zookeeper:2181"
+# kafka-manager.zkhosts=${?ZK_HOSTS}
+kafka-manager.zkhosts="127.0.0.1:2181"
+```
+
+最后使用如下命令生成相应启动配置文件：
+```bash
+sudo nano /etc/systemd/system/kafka-manager.service
+```
+其内容为：
+```bash
+[Unit]
+Description=Yahoo-Kafka-Manager
+Documentation=https://github.com/yahoo/kafka-manager
+Requires=network.target remote-fs.target
+After=network.target remote-fs.target zookeeper.service kafka.service
+
+[Service]
+Type=simple
+User=kafka
+Group=kafka
+Environment=JAVA_HOME=/etc/alternatives/jre
+ExecStart=/home/wwwroot/kafka-manager/bin/kafka-manager -Dconfig.file=/home/wwwroot/kafka-manager/conf/application.conf
+ExecStop=pkill -F /home/wwwroot/kafka-manager/RUNNING_PID && rm -f /home/wwwroot/kafka-manager/RUNNING_PID
+
+[Install]
+WantedBy=multi-user.target
+```
+
+最后，参考上文，启动该新服务：
+
+```bash
+sudo systemctl daemon-reload
+
+sudo systemctl enable kafka-manager.service
+sudo systemctl start kafka-manager.service
+sudo systemctl status kafka-manager.service
+
+ss -ntlup|grep 9000
+```
+
+##### 2.10, 其他操作系统参考
 - [Linux下安装Kafka和PHP的相关扩展](https://blog.skyx.in/archives/282/)
 - [Install and Configure Apache Kafka on Ubuntu 16.04](https://devops.profitbricks.com/tutorials/install-and-configure-apache-kafka-on-ubuntu-1604-1/)
 - [Rdkafka Installation](https://arnaud-lb.github.io/php-rdkafka/phpdoc/rdkafka.installation.html)
@@ -226,6 +298,7 @@ cd /opt/kafka/bin
 
 #### 3，参考资料
 
+- [Kafka简介及使用PHP处理Kafka消息](https://aiddroid.com/kafka-introduction-and-php-kafka-usage/)
 - [How to Install Apache Kafka on CentOS 7](https://www.vultr.com/docs/how-to-install-apache-kafka-on-centos-7)
 - [Installing Apache Kafka and Zookeeper CentOS 7.2](http://davidssysadminnotes.blogspot.com/2016/01/installing-apache-kafka-and-zookeeper.html)
 - [Installing the extension with PECL](https://arnaud-lb.github.io/php-rdkafka/phpdoc/rdkafka.installation.pecl.html)
